@@ -1,0 +1,124 @@
+#include <stdio.h> 
+#include <string.h> 
+ 
+#define MAX_SEATS 100 
+#define MAX_NAME_LENGTH 100 
+ 
+typedef struct { 
+    int seatNumber; 
+    int isBooked; 
+    char passengerName[MAX_NAME_LENGTH]; 
+} Seat; 
+ 
+Seat seats[MAX_SEATS]; 
+ 
+void initSeats() { 
+    for (int i = 0; i < MAX_SEATS; i++) { 
+        seats[i].seatNumber = i + 1; 
+        seats[i].isBooked = 0; 
+        strcpy(seats[i].passengerName, ""); 
+    } 
+} 
+ 
+int checkAvailability(int seatNumber) { 
+    if (seatNumber < 1 || seatNumber > MAX_SEATS) { 
+        return -1; // Invalid seat number
+    } 
+    return seats[seatNumber - 1].isBooked; 
+} 
+ 
+int bookSeat(int seatNumber, const char *passengerName) { 
+    if (seatNumber < 1 || seatNumber > MAX_SEATS) { 
+        return 0; // Invalid seat number 
+    } 
+    if (seats[seatNumber - 1].isBooked) { 
+        return 0; // Seat already booked 
+    } 
+    seats[seatNumber - 1].isBooked = 1; 
+    strcpy(seats[seatNumber - 1].passengerName, passengerName); 
+    return 1; // Booking successful 
+} 
+ 
+int cancelBooking(int seatNumber) { 
+    if (seatNumber < 1 || seatNumber > MAX_SEATS || !seats[seatNumber - 
+1].isBooked) { 
+        return 0; // Invalid seat number or seat not booked 
+    } 
+    seats[seatNumber - 1].isBooked = 0;  
+   strcpy(seats[seatNumber - 1].passengerName, ""); 
+    return 1; // Cancellation successful 
+} 
+ 
+void displayBookedSeats() { 
+    printf("Booked Seats:\n"); 
+    for (int i = 0; i < MAX_SEATS; i++) { 
+ 
+  
+        if (seats[i].isBooked) { 
+            printf("Seat Number: %d, Passenger Name: %s\n", seats[i].seatNumber, 
+seats[i].passengerName); 
+        } 
+    } 
+} 
+ 
+int main() { 
+    int choice, seatNumber; 
+    char passengerName[MAX_NAME_LENGTH]; 
+ 
+    initSeats(); 
+ 
+    do { 
+        printf("\nRailway Reservation System\n"); 
+        printf("1. Check Seat Availability\n"); 
+        printf("2. Book a Seat\n"); 
+        printf("3. Cancel Booking\n"); 
+        printf("4. Display Booked Seats\n"); 
+        printf("5. Exit\n"); 
+        printf("Enter your choice: "); 
+        scanf("%d", &choice); 
+ 
+        switch(choice) { 
+            case 1: 
+                printf("Enter seat number: "); 
+                scanf("%d", &seatNumber); 
+                if (checkAvailability(seatNumber)) { 
+                    printf("Seat %d is already booked.\n", seatNumber); 
+                } else { 
+                    printf("Seat %d is available.\n", seatNumber); 
+                } 
+                break; 
+            case 2: 
+                printf("Enter seat number: "); 
+                scanf("%d", &seatNumber); 
+                printf("Enter passenger name: "); 
+                scanf("%s", passengerName); 
+                if (bookSeat(seatNumber, passengerName)) { 
+                    printf("Seat %d booked successfully for %s.\n", seatNumber, 
+passengerName); 
+                } else { 
+                    printf("Failed to book seat %d.\n", seatNumber);              
+                 } 
+                break; 
+            case 3: 
+                printf("Enter seat number to cancel booking: "); 
+                scanf("%d", &seatNumber); 
+                if (cancelBooking(seatNumber)) { 
+                    printf("Booking for seat %d cancelled successfully.\n", seatNumber); 
+                } else { 
+                    printf("Failed to cancel booking for seat %d.\n", seatNumber); 
+                } 
+                break; 
+            case 4: 
+                displayBookedSeats(); 
+                break; 
+            case 5:
+  
+                printf("Exiting...\n"); 
+                break; 
+            default: 
+                printf("Invalid choice. Please try again.\n"); 
+        } 
+    } while(choice != 5); 
+ 
+    return 0; 
+} 
